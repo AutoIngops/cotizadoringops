@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { format, isWithin24Hours, isWithin72Hours } from "date-fns";
+import { format, isAfter, isBefore, addHours } from "date-fns";
 
 const projects = [
   { name: "Landing Page maestro espiritual", date: new Date() },
@@ -10,8 +10,12 @@ const projects = [
 ];
 
 const getStatusColor = (date: Date) => {
-  if (isWithin24Hours(date, new Date())) return "text-destructive";
-  if (isWithin72Hours(date, new Date())) return "text-primary";
+  const now = new Date();
+  const in24Hours = addHours(now, 24);
+  const in72Hours = addHours(now, 72);
+
+  if (isBefore(date, in24Hours)) return "text-destructive";
+  if (isBefore(date, in72Hours)) return "text-primary";
   return "text-green-500";
 };
 

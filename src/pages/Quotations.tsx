@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
 
 const services = {
@@ -81,9 +82,9 @@ const Quotations = () => {
     client: "",
     service: "",
     plan: "",
-    selectedExtras: [],
-    startDate: null,
-    endDate: null,
+    selectedExtras: [] as string[],
+    startDate: null as Date | null,
+    endDate: null as Date | null,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -119,60 +120,100 @@ const Quotations = () => {
       <main className="main-content">
         <div className="grid md:grid-cols-2 gap-8">
           <form onSubmit={handleSubmit} className="space-y-6">
-            <Select
-              label="Asesor"
-              options={["Juan", "Daniel", "Nicolás"]}
-              value={formData.advisor}
-              onChange={(value) => setFormData({ ...formData, advisor: value })}
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Asesor</label>
+              <Select value={formData.advisor} onValueChange={(value) => setFormData({ ...formData, advisor: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar asesor" />
+                </SelectTrigger>
+                <SelectContent>
+                  {["Juan", "Daniel", "Nicolás"].map((advisor) => (
+                    <SelectItem key={advisor} value={advisor}>
+                      {advisor}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-            <Input
-              label="Nombre del cliente"
-              value={formData.client}
-              onChange={(e) => setFormData({ ...formData, client: e.target.value })}
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Nombre del cliente</label>
+              <Input
+                value={formData.client}
+                onChange={(e) => setFormData({ ...formData, client: e.target.value })}
+              />
+            </div>
 
-            <Select
-              label="Servicio"
-              options={Object.keys(services)}
-              value={formData.service}
-              onChange={(value) => setFormData({ ...formData, service: value, plan: "" })}
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Servicio</label>
+              <Select value={formData.service} onValueChange={(value) => setFormData({ ...formData, service: value, plan: "" })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar servicio" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.keys(services).map((service) => (
+                    <SelectItem key={service} value={service}>
+                      {service}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
             {formData.service && (
-              <Select
-                label="Plan"
-                options={services[formData.service]}
-                value={formData.plan}
-                onChange={(value) => setFormData({ ...formData, plan: value })}
-              />
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Plan</label>
+                <Select value={formData.plan} onValueChange={(value) => setFormData({ ...formData, plan: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar plan" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {services[formData.service].map((plan) => (
+                      <SelectItem key={plan} value={plan}>
+                        {plan}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             )}
 
             {formData.plan && (
-              <Select
-                label="Extras"
-                options={extras[formData.plan].map((extra) => extra.name)}
-                value={formData.selectedExtras}
-                onChange={(value) =>
-                  setFormData({
-                    ...formData,
-                    selectedExtras: [...formData.selectedExtras, value],
-                  })
-                }
-                multiple
-              />
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Extras</label>
+                <Select
+                  value={formData.selectedExtras.join(",")}
+                  onValueChange={(value) =>
+                    setFormData({
+                      ...formData,
+                      selectedExtras: value.split(",").filter(Boolean),
+                    })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar extras" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {extras[formData.plan].map((extra) => (
+                      <SelectItem key={extra.name} value={extra.name}>
+                        {extra.name} - ${extra.price.toLocaleString()} COP
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             )}
 
             <div className="grid grid-cols-2 gap-4">
               <DatePicker
                 label="Fecha de inicio"
                 value={formData.startDate}
-                onChange={(date) => setFormData({ ...formData, startDate: date })}
+                onChange={(date) => setFormData({ ...formData, startDate: date || null })}
               />
               <DatePicker
                 label="Fecha de fin"
                 value={formData.endDate}
-                onChange={(date) => setFormData({ ...formData, endDate: date })}
+                onChange={(date) => setFormData({ ...formData, endDate: date || null })}
               />
             </div>
 
@@ -184,18 +225,10 @@ const Quotations = () => {
           <Card className="p-6 space-y-4">
             <h2 className="text-2xl font-bold">Previsualización</h2>
             <div className="space-y-2">
-              <p>
-                <strong>Asesor:</strong> {formData.advisor}
-              </p>
-              <p>
-                <strong>Cliente:</strong> {formData.client}
-              </p>
-              <p>
-                <strong>Servicio:</strong> {formData.service}
-              </p>
-              <p>
-                <strong>Plan:</strong> {formData.plan}
-              </p>
+              <p><strong>Asesor:</strong> {formData.advisor}</p>
+              <p><strong>Cliente:</strong> {formData.client}</p>
+              <p><strong>Servicio:</strong> {formData.service}</p>
+              <p><strong>Plan:</strong> {formData.plan}</p>
               <p>
                 <strong>Extras:</strong>{" "}
                 {formData.selectedExtras.length > 0

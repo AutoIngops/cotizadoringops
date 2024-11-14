@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Select } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -49,13 +49,20 @@ const Advisors = () => {
       <main className="main-content">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Cotizaciones por Asesor</h1>
-          <Select
-            options={["Juan", "Daniel", "Nicolás"]}
-            value={selectedAdvisor}
-            onChange={setSelectedAdvisor}
-            placeholder="Filtrar por asesor"
-            className="w-48"
-          />
+          <div className="w-48">
+            <Select value={selectedAdvisor} onValueChange={setSelectedAdvisor}>
+              <SelectTrigger>
+                <SelectValue placeholder="Filtrar por asesor" />
+              </SelectTrigger>
+              <SelectContent>
+                {["Juan", "Daniel", "Nicolás"].map((advisor) => (
+                  <SelectItem key={advisor} value={advisor}>
+                    {advisor}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <Card className="overflow-hidden">
