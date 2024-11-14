@@ -69,7 +69,7 @@ export const QuotationForm = ({ formData, onFormChange, onSubmit }: QuotationFor
             <SelectTrigger className="w-full bg-white">
               <SelectValue placeholder="Seleccionar asesor" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white">
               {["Juan", "Daniel", "Nicolás"].map((advisor) => (
                 <SelectItem key={advisor} value={advisor}>
                   {advisor}
@@ -94,7 +94,7 @@ export const QuotationForm = ({ formData, onFormChange, onSubmit }: QuotationFor
             <SelectTrigger className="w-full bg-white">
               <SelectValue placeholder="Seleccionar servicio" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white">
               {Object.keys(services).map((service) => (
                 <SelectItem key={service} value={service}>
                   {service}
@@ -114,7 +114,7 @@ export const QuotationForm = ({ formData, onFormChange, onSubmit }: QuotationFor
               <SelectTrigger className="w-full bg-white">
                 <SelectValue placeholder="Seleccionar plan" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 {services[formData.service].map((plan) => (
                   <SelectItem key={plan} value={plan}>
                     {plan}
@@ -136,7 +136,7 @@ export const QuotationForm = ({ formData, onFormChange, onSubmit }: QuotationFor
                 <SelectTrigger className="w-full bg-white">
                   <SelectValue placeholder="Seleccionar extras" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   {extras[formData.plan].map((extra) => (
                     <SelectItem key={extra.name} value={extra.name}>
                       {extra.name} - ${extra.price.toLocaleString()} COP
@@ -166,7 +166,7 @@ export const QuotationForm = ({ formData, onFormChange, onSubmit }: QuotationFor
                 <SelectTrigger className="w-full bg-white">
                   <SelectValue placeholder="Seleccionar servicio extra" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   {Object.keys(services).map((service) => (
                     <SelectItem key={service} value={service}>
                       {service}
@@ -186,7 +186,7 @@ export const QuotationForm = ({ formData, onFormChange, onSubmit }: QuotationFor
                   <SelectTrigger className="w-full bg-white">
                     <SelectValue placeholder="Seleccionar plan extra" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     {services[formData.extraService].map((plan) => (
                       <SelectItem key={plan} value={plan}>
                         {plan}
@@ -196,38 +196,28 @@ export const QuotationForm = ({ formData, onFormChange, onSubmit }: QuotationFor
                 </Select>
               </div>
             )}
-          </>
-        )}
 
-        {selectedServices.length > 0 && (
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Servicios seleccionados</label>
-            <div className="flex flex-wrap gap-2">
-              {selectedServices.map((service, index) => (
-                <div key={index} className="flex items-center gap-2 bg-muted p-2 rounded-md">
-                  <span>{service}</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const newServices = selectedServices.filter((_, i) => i !== index);
-                      setSelectedServices(newServices);
-                      if (service === formData.service) {
-                        onFormChange({
-                          ...formData,
-                          service: newServices[newServices.length - 1] || "",
-                          plan: "",
-                          selectedExtras: [],
-                        });
-                      }
-                    }}
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
+            {formData.extraPlan && (
+              <div>
+                <label className="text-sm font-medium">Other Extra</label>
+                <Select
+                  value={formData.selectedExtras.join(",")}
+                  onValueChange={handleExtraChange}
+                >
+                  <SelectTrigger className="w-full bg-white">
+                    <SelectValue placeholder="Seleccionar otros extras" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    {extras[formData.extraPlan].map((extra) => (
+                      <SelectItem key={extra.name} value={extra.name}>
+                        {extra.name} - ${extra.price.toLocaleString()} COP
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </>
         )}
       </div>
 
