@@ -21,7 +21,11 @@ interface QuotationFormProps {
 }
 
 export const QuotationForm = ({ formData, onFormChange, onSubmit }: QuotationFormProps) => {
+  const [selectedServices, setSelectedServices] = useState<string[]>([formData.service].filter(Boolean));
+
   const handleServiceChange = (value: string) => {
+    const newServices = [...selectedServices, value];
+    setSelectedServices(newServices);
     onFormChange({
       ...formData,
       service: value,
@@ -127,6 +131,37 @@ export const QuotationForm = ({ formData, onFormChange, onSubmit }: QuotationFor
                 ))}
               </SelectContent>
             </Select>
+          </div>
+        )}
+
+        {selectedServices.length > 0 && (
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Servicios seleccionados</label>
+            <div className="flex flex-wrap gap-2">
+              {selectedServices.map((service, index) => (
+                <div key={index} className="flex items-center gap-2 bg-muted p-2 rounded-md">
+                  <span>{service}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newServices = selectedServices.filter((_, i) => i !== index);
+                      setSelectedServices(newServices);
+                      if (service === formData.service) {
+                        onFormChange({
+                          ...formData,
+                          service: newServices[newServices.length - 1] || "",
+                          plan: "",
+                          selectedExtras: [],
+                        });
+                      }
+                    }}
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
