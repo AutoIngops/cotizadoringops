@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
@@ -10,21 +10,27 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const initialQuotations = [
-  {
-    advisor: "Juan",
-    client: "Rosa Melano",
-    service: "Desarrollo Web",
-    plan: "E-Commerce",
-    extras: "Extra 1",
-    time: "15 Días",
-    cost: 1300000, // E-commerce (1,200,000) + Extra 1 (100,000)
-  },
-];
+interface Quotation {
+  advisor: string;
+  client: string;
+  service: string;
+  plan: string;
+  extras: string;
+  time: string;
+  cost: number;
+}
 
 const Advisors = () => {
   const [selectedAdvisor, setSelectedAdvisor] = useState("");
-  const [quotations, setQuotations] = useState(initialQuotations);
+  const [quotations, setQuotations] = useState<Quotation[]>([]);
+
+  useEffect(() => {
+    // Load quotations from localStorage
+    const savedQuotations = localStorage.getItem("quotations");
+    if (savedQuotations) {
+      setQuotations(JSON.parse(savedQuotations));
+    }
+  }, []);
 
   const filteredQuotations = selectedAdvisor
     ? quotations.filter((q) => q.advisor === selectedAdvisor)
@@ -51,10 +57,10 @@ const Advisors = () => {
           <h1 className="text-3xl font-bold">Cotizaciones por Asesor</h1>
           <div className="w-48">
             <Select value={selectedAdvisor} onValueChange={setSelectedAdvisor}>
-              <SelectTrigger>
+              <SelectTrigger className="w-full bg-white">
                 <SelectValue placeholder="Filtrar por asesor" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 {["Juan", "Daniel", "Nicolás"].map((advisor) => (
                   <SelectItem key={advisor} value={advisor}>
                     {advisor}

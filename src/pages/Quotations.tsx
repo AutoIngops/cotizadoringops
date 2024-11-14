@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { QuotationForm } from "@/components/quotations/QuotationForm";
 import { QuotationPreview } from "@/components/quotations/QuotationPreview";
-import { prices, extras } from "@/components/quotations/quotationData";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 const Quotations = () => {
   const [formData, setFormData] = useState({
@@ -9,22 +10,71 @@ const Quotations = () => {
     client: "",
     service: "",
     plan: "",
+    extraService: "",
+    extraPlan: "",
     selectedExtras: [] as string[],
     startDate: null as Date | null,
     endDate: null as Date | null,
   });
 
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
+    
+    // Get existing quotations from localStorage or initialize empty array
+    const existingQuotations = JSON.parse(localStorage.getItem("quotations") || "[]");
+    
+    // Create new quotation object
+    const newQuotation = {
+      advisor: formData.advisor,
+      client: formData.client,
+      service: formData.service,
+      plan: formData.plan,
+      extras: formData.selectedExtras.join(", "),
+      time: formData.startDate && formData.endDate 
+        ? `${formData.startDate.toLocaleDateString()} - ${formData.endDate.toLocaleDateString()}`
+        : "No especificado",
+      cost: calculateTotal(),
+    };
+    
+    // Add new quotation to array
+    const updatedQuotations = [...existingQuotations, newQuotation];
+    
+    // Save to localStorage
+    localStorage.setItem("quotations", JSON.stringify(updatedQuotations));
+    
+    // Show success message
+    toast({
+      title: "Cotización creada",
+      description: "La cotización ha sido guardada exitosamente",
+    });
+    
+    // Navigate to advisors page
+    navigate("/advisors");
   };
 
   const calculateTotal = () => {
-    const planPrice = prices[formData.plan] || 0;
-    const extrasTotal = formData.selectedExtras.reduce(
-      (acc, extra) => acc + (extras[formData.plan]?.find((e) => e.name === extra)?.price || 0), 0
-    );
-    return planPrice + extrasTotal;
+    let total = 0;
+    
+    // Add main plan price
+    if (formData.plan) {
+      total += prices[formData.plan] || 0;
+    }
+    
+    // Add main extras
+    formData.selectedExtras.forEach(extraName => {
+      const extraPrice = extras[formData.plan]?.find(e => e.name === extraName)?.price || 0;
+      total += extraPrice;
+    });
+    
+    // Add extra plan price
+    if (formData.extraPlan) {
+      total += prices[formData.extraPlan] || 0;
+    }
+
+    return total;
   };
 
   return (
@@ -50,7 +100,7 @@ const Quotations = () => {
             onFormChange={setFormData}
             onSubmit={handleSubmit}
           />
-          <QuotationPreview formData={formData} total={calculateTotal()} />
+          <QuotationPreview formData={formData} />
         </div>
       </main>
     </div>
