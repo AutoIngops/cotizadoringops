@@ -3,6 +3,7 @@ import { QuotationForm } from "@/components/quotations/QuotationForm";
 import { QuotationPreview } from "@/components/quotations/QuotationPreview";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { services, prices, extras } from "@/components/quotations/quotationData";
 
 const Quotations = () => {
   const [formData, setFormData] = useState({
@@ -23,7 +24,26 @@ const Quotations = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Get existing quotations from localStorage or initialize empty array
+    // Calculate total cost including extras
+    let total = 0;
+    
+    // Add main plan price
+    if (formData.plan) {
+      total += prices[formData.plan] || 0;
+    }
+    
+    // Add main extras
+    formData.selectedExtras.forEach(extraName => {
+      const extraPrice = extras[formData.plan]?.find(e => e.name === extraName)?.price || 0;
+      total += extraPrice;
+    });
+    
+    // Add extra plan price if exists
+    if (formData.extraPlan) {
+      total += prices[formData.extraPlan] || 0;
+    }
+
+    // Get existing quotations from localStorage
     const existingQuotations = JSON.parse(localStorage.getItem("quotations") || "[]");
     
     // Create new quotation object
@@ -36,7 +56,7 @@ const Quotations = () => {
       time: formData.startDate && formData.endDate 
         ? `${formData.startDate.toLocaleDateString()} - ${formData.endDate.toLocaleDateString()}`
         : "No especificado",
-      cost: calculateTotal(),
+      cost: total,
     };
     
     // Add new quotation to array
@@ -53,28 +73,6 @@ const Quotations = () => {
     
     // Navigate to advisors page
     navigate("/advisors");
-  };
-
-  const calculateTotal = () => {
-    let total = 0;
-    
-    // Add main plan price
-    if (formData.plan) {
-      total += prices[formData.plan] || 0;
-    }
-    
-    // Add main extras
-    formData.selectedExtras.forEach(extraName => {
-      const extraPrice = extras[formData.plan]?.find(e => e.name === extraName)?.price || 0;
-      total += extraPrice;
-    });
-    
-    // Add extra plan price
-    if (formData.extraPlan) {
-      total += prices[formData.extraPlan] || 0;
-    }
-
-    return total;
   };
 
   return (

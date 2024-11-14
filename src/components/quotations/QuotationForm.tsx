@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { DatePicker } from "@/components/ui/date-picker";
 import { services, prices, extras } from "./quotationData";
 
 export interface FormData {
@@ -126,34 +127,49 @@ export const QuotationForm = ({ formData, onFormChange, onSubmit }: QuotationFor
         )}
 
         {formData.plan && (
-          <div className="flex items-center justify-between">
-            <div className="flex-1 mr-4">
-              <label className="text-sm font-medium">Extras</label>
-              <Select
-                value={formData.selectedExtras.join(",")}
-                onValueChange={handleExtraChange}
-              >
-                <SelectTrigger className="w-full bg-white">
-                  <SelectValue placeholder="Seleccionar extras" />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  {extras[formData.plan].map((extra) => (
-                    <SelectItem key={extra.name} value={extra.name}>
-                      {extra.name} - ${extra.price.toLocaleString()} COP
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex-1 mr-4">
+                <label className="text-sm font-medium">Extras</label>
+                <Select
+                  value={formData.selectedExtras.join(",")}
+                  onValueChange={handleExtraChange}
+                >
+                  <SelectTrigger className="w-full bg-white">
+                    <SelectValue placeholder="Seleccionar extras" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    {extras[formData.plan].map((extra) => (
+                      <SelectItem key={extra.name} value={extra.name}>
+                        {extra.name} - ${extra.price.toLocaleString()} COP
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="extraPlans"
+                  checked={showExtraPlans}
+                  onCheckedChange={(checked) => setShowExtraPlans(checked as boolean)}
+                />
+                <label htmlFor="extraPlans" className="text-sm font-medium">
+                  Extra Plans
+                </label>
+              </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="extraPlans"
-                checked={showExtraPlans}
-                onCheckedChange={(checked) => setShowExtraPlans(checked as boolean)}
+
+            <div className="grid grid-cols-2 gap-4">
+              <DatePicker
+                label="Fecha de inicio"
+                value={formData.startDate}
+                onChange={(date) => onFormChange({ ...formData, startDate: date })}
               />
-              <label htmlFor="extraPlans" className="text-sm font-medium">
-                Extra Plans
-              </label>
+              <DatePicker
+                label="Fecha de entrega"
+                value={formData.endDate}
+                onChange={(date) => onFormChange({ ...formData, endDate: date })}
+              />
             </div>
           </div>
         )}
