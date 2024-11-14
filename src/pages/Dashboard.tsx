@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { format, isAfter, isBefore, addHours } from "date-fns";
 
 const projects = [
@@ -42,18 +43,21 @@ const Dashboard = () => {
           <p className="text-muted-foreground">Bienvenido de vuelta</p>
         </div>
 
-        <div className="stats-grid">
-          <Card className="stat-card">
-            <h3 className="text-lg font-medium">Proyectos Completados</h3>
-            <p className="text-3xl font-bold text-primary">69</p>
+        <div className="grid grid-cols-2 gap-6 mb-6">
+          <Card className="stat-card text-center">
+            <h3 className="text-lg font-medium mb-4">Proyectos Completados</h3>
+            <p className="text-5xl font-bold text-primary mb-4">69</p>
+            <Button variant="outline" className="w-full">
+              Ver más
+            </Button>
           </Card>
 
           <Card className="stat-card">
-            <h3 className="text-lg font-medium">Proyectos Pendientes</h3>
-            <div className="space-y-2 mt-4">
+            <h3 className="text-lg font-medium mb-4">Proyectos Pendientes</h3>
+            <div className="divide-y">
               {projects.map((project, index) => (
-                <div key={index} className="flex justify-between items-center">
-                  <span>{project.name}</span>
+                <div key={index} className="flex justify-between items-center py-2">
+                  <span className="font-medium">{project.name}</span>
                   <span className={getStatusColor(project.date)}>
                     {format(project.date, "dd/MM/yyyy")}
                   </span>
@@ -61,7 +65,9 @@ const Dashboard = () => {
               ))}
             </div>
           </Card>
+        </div>
 
+        <div className="grid grid-cols-3 gap-6">
           <Card className="stat-card">
             <h3 className="text-lg font-medium">Campo para nuevo Ítem 1</h3>
             <p className="text-muted-foreground">Lorem Ipsum</p>
