@@ -64,26 +64,28 @@ export const QuotationForm = ({ formData, onFormChange, onSubmit }: QuotationFor
           </Select>
         </div>
 
-        <div>
-          <label className="text-sm font-medium">Plan</label>
-          <Select
-            value={formData.plan}
-            onValueChange={(value) => onFormChange({ ...formData, plan: value })}
-          >
-            <SelectTrigger className="w-full bg-white">
-              <SelectValue placeholder="Seleccionar plan" />
-            </SelectTrigger>
-            <SelectContent className="bg-white">
-              {services[formData.service].map((plan) => (
-                <SelectItem key={plan} value={plan}>
-                  {plan}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {formData.service && (
+          <div>
+            <label className="text-sm font-medium">Plan</label>
+            <Select
+              value={formData.plan}
+              onValueChange={(value) => onFormChange({ ...formData, plan: value })}
+            >
+              <SelectTrigger className="w-full bg-white">
+                <SelectValue placeholder="Seleccionar plan" />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                {services[formData.service]?.map((plan) => (
+                  <SelectItem key={plan} value={plan}>
+                    {plan}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
         
-        {formData.plan && (
+        {formData.plan && extras[formData.plan] && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex-1 mr-4">
