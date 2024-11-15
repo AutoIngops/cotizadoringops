@@ -90,30 +90,28 @@ export const QuotationForm = ({ formData, onFormChange, onSubmit }: QuotationFor
             <div className="flex items-center justify-between">
               <div className="flex-1 mr-4">
                 <label className="text-sm font-medium">Extras</label>
-                <Select
-                  value={formData.selectedExtras.join(",")}
-                  onValueChange={(value) => {
-                    const newExtras = formData.selectedExtras.includes(value)
-                      ? formData.selectedExtras.filter(e => e !== value)
-                      : [...formData.selectedExtras, value];
-                    
-                    onFormChange({
-                      ...formData,
-                      selectedExtras: newExtras,
-                    });
-                  }}
-                >
-                  <SelectTrigger className="w-full bg-white">
-                    <SelectValue placeholder="Seleccionar extras" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    {extras[formData.plan].map((extra) => (
-                      <SelectItem key={extra.name} value={extra.name}>
+                <div className="space-y-2">
+                  {extras[formData.plan].map((extra) => (
+                    <div key={extra.name} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={extra.name}
+                        checked={formData.selectedExtras.includes(extra.name)}
+                        onCheckedChange={(checked) => {
+                          const newExtras = checked
+                            ? [...formData.selectedExtras, extra.name]
+                            : formData.selectedExtras.filter((e) => e !== extra.name);
+                          onFormChange({
+                            ...formData,
+                            selectedExtras: newExtras,
+                          });
+                        }}
+                      />
+                      <label htmlFor={extra.name} className="text-sm">
                         {extra.name} - ${extra.price.toLocaleString()} COP
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                      </label>
+                    </div>
+                  ))}
+                </div>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
