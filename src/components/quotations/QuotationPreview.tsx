@@ -32,10 +32,24 @@ export const QuotationPreview = ({ formData }: QuotationPreviewProps) => {
 
   return (
     <Card className="p-6 space-y-4">
-      <h2 className="text-2xl font-bold">Previsualización</h2>
-      <div className="space-y-2">
+      <div className="text-center space-y-4">
+        <img 
+          src="https://drive.google.com/file/d/1Wzl2xDBXzFooJrxmuZV-w1xOL0DD2f2O/view?usp=sharing" 
+          alt="Janus Logo" 
+          className="mx-auto h-24 object-contain"
+        />
+        <p className="text-sm text-muted-foreground italic">
+          "The digital solution for your business"
+        </p>
+        <p className="text-sm">
+          {format(new Date(), "dd 'de' MMMM 'del' yyyy")}
+        </p>
+      </div>
+
+      <div className="space-y-2 mt-6">
         <p><strong>Asesor:</strong> {formData.advisor}</p>
         <p><strong>Cliente:</strong> {formData.client}</p>
+        <p><strong>Empresa:</strong> {formData.company}</p>
         <p><strong>Servicio:</strong> {formData.service}</p>
         <p><strong>Plan:</strong> {formData.plan}</p>
         {formData.extraService && (
@@ -59,7 +73,7 @@ export const QuotationPreview = ({ formData }: QuotationPreviewProps) => {
               )}`
             : "No especificado"}
         </p>
-        <p className="text-xl font-bold">
+        <p className="text-xl font-bold mt-4">
           <strong>Total:</strong> ${calculateTotal().toLocaleString()} COP
         </p>
       </div>

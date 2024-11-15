@@ -9,6 +9,7 @@ const Quotations = () => {
   const [formData, setFormData] = useState({
     advisor: "",
     client: "",
+    company: "",
     service: "",
     plan: "",
     extraService: "",
@@ -24,32 +25,27 @@ const Quotations = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Calculate total cost including extras
+    // Calculate total cost
     let total = 0;
-    
-    // Add main plan price
     if (formData.plan) {
       total += prices[formData.plan] || 0;
     }
-    
-    // Add main extras
     formData.selectedExtras.forEach(extraName => {
       const extraPrice = extras[formData.plan]?.find(e => e.name === extraName)?.price || 0;
       total += extraPrice;
     });
-    
-    // Add extra plan price if exists
     if (formData.extraPlan) {
       total += prices[formData.extraPlan] || 0;
     }
 
-    // Get existing quotations from localStorage
+    // Get existing quotations
     const existingQuotations = JSON.parse(localStorage.getItem("quotations") || "[]");
     
-    // Create new quotation object
+    // Create new quotation
     const newQuotation = {
       advisor: formData.advisor,
       client: formData.client,
+      company: formData.company,
       service: formData.service,
       plan: formData.plan,
       extras: formData.selectedExtras.join(", "),
@@ -59,11 +55,12 @@ const Quotations = () => {
       cost: total,
     };
     
-    // Add new quotation to array
-    const updatedQuotations = [...existingQuotations, newQuotation];
+    // Update quotations in localStorage
+    localStorage.setItem("quotations", JSON.stringify([...existingQuotations, newQuotation]));
     
-    // Save to localStorage
-    localStorage.setItem("quotations", JSON.stringify(updatedQuotations));
+    // Update completed projects counter
+    const currentCompleted = parseInt(localStorage.getItem("completedProjects") || "0");
+    localStorage.setItem("completedProjects", (currentCompleted + 1).toString());
     
     // Show success message
     toast({
@@ -78,6 +75,11 @@ const Quotations = () => {
   return (
     <div className="dashboard-container">
       <aside className="sidebar">
+        <div className="text-center py-4">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Janus
+          </h1>
+        </div>
         <nav className="space-y-2">
           <a href="/dashboard" className="block p-2 rounded-md hover:bg-muted">
             Inicio

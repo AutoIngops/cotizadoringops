@@ -9,6 +9,7 @@ import { services, prices, extras } from "./quotationData";
 export interface FormData {
   advisor: string;
   client: string;
+  company: string;
   service: string;
   plan: string;
   extraService: string;
@@ -85,6 +86,15 @@ export const QuotationForm = ({ formData, onFormChange, onSubmit }: QuotationFor
           <Input
             value={formData.client}
             onChange={(e) => onFormChange({ ...formData, client: e.target.value })}
+            className="bg-white"
+          />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium">Nombre de la empresa</label>
+          <Input
+            value={formData.company}
+            onChange={(e) => onFormChange({ ...formData, company: e.target.value })}
             className="bg-white"
           />
         </div>
