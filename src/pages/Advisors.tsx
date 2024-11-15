@@ -165,6 +165,7 @@ const Advisors = () => {
                           {quotation.recommendations && (
                             <p><strong>Recomendaciones:</strong> {quotation.recommendations}</p>
                           )}
+                          <p><strong>Fecha y Hora:</strong> {quotation.time}</p>
                         </div>
                       </TableCell>
                     </TableRow>

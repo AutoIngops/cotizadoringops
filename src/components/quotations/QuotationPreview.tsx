@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { format } from "date-fns";
 import type { FormData } from "./QuotationForm";
 import { prices, extras } from "./quotationData";
+import { Button } from "@/components/ui/button";
 
 interface QuotationPreviewProps {
   formData: FormData;
@@ -11,23 +12,25 @@ export const QuotationPreview = ({ formData }: QuotationPreviewProps) => {
   const calculateTotal = () => {
     let total = 0;
     
-    // Add main plan price
     if (formData.plan) {
       total += prices[formData.plan] || 0;
     }
     
-    // Add main extras
     formData.selectedExtras.forEach(extraName => {
       const extraPrice = extras[formData.plan]?.find(e => e.name === extraName)?.price || 0;
       total += extraPrice;
     });
     
-    // Add extra plan price
     if (formData.extraPlan) {
       total += prices[formData.extraPlan] || 0;
     }
 
     return total;
+  };
+
+  const handleWhatsAppShare = () => {
+    const whatsappNumber = `57${formData.phone.replace(/\D/g, '')}`;
+    window.open(`https://wa.me/${whatsappNumber}`, '_blank');
   };
 
   return (
@@ -78,6 +81,13 @@ export const QuotationPreview = ({ formData }: QuotationPreviewProps) => {
           <strong>Total:</strong> ${calculateTotal().toLocaleString()} COP
         </p>
       </div>
+
+      <Button 
+        onClick={handleWhatsAppShare}
+        className="w-full mt-4"
+      >
+        Enviar PDF
+      </Button>
     </Card>
   );
 };
