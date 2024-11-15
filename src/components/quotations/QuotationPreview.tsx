@@ -34,7 +34,7 @@ export const QuotationPreview = ({ formData }: QuotationPreviewProps) => {
     <Card className="p-6 space-y-4">
       <div className="text-center space-y-4">
         <img 
-          src="https://drive.google.com/file/d/1Wzl2xDBXzFooJrxmuZV-w1xOL0DD2f2O/view?usp=sharing" 
+          src="/janus-logo.png" 
           alt="Janus Logo" 
           className="mx-auto h-24 object-contain"
         />
@@ -50,6 +50,7 @@ export const QuotationPreview = ({ formData }: QuotationPreviewProps) => {
         <p><strong>Asesor:</strong> {formData.advisor}</p>
         <p><strong>Cliente:</strong> {formData.client}</p>
         <p><strong>Empresa:</strong> {formData.company}</p>
+        <p><strong>Contacto:</strong> {formData.countryCode} {formData.phone}</p>
         <p><strong>Servicio:</strong> {formData.service}</p>
         <p><strong>Plan:</strong> {formData.plan}</p>
         {formData.extraService && (
