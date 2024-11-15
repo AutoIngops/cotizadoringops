@@ -36,11 +36,11 @@ export const QuotationPreview = ({ formData }: QuotationPreviewProps) => {
   return (
     <Card className="p-6 space-y-4">
       <div className="text-center space-y-4">
-        <img 
-          src="/janus-logo.png" 
-          alt="Janus Logo" 
-          className="mx-auto h-24 object-contain"
-        />
+        <div className="font-alata text-[72px] leading-none">
+          <span className="text-brand-purple">IN</span>
+          <span className="text-brand-black">G</span>
+          <span className="text-brand-purple">OPS</span>
+        </div>
         <p className="text-sm text-muted-foreground italic">
           "The digital solution for your business"
         </p>

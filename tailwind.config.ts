@@ -18,6 +18,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        alata: ['Alata', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -47,6 +50,10 @@ export default {
         card: {
           DEFAULT: "#FFFFFF",
           foreground: "#111827",
+        },
+        brand: {
+          purple: "#6637E3",
+          black: "#000000",
         },
       },
       borderRadius: {
